@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+      integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Ferrero Custom Product</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Navbar</span>
+        </div>
+      </nav>
+    </header>
+    <div class="container-xxl">
+      <div class="row">
+        <div class="col-md-12 col-lg-7">
+          <div class="w-100">
+            <div class="d-flex">
+              <div class="col-3 pe-3" id="small-image"></div>
+              <div
+                class="col-8"
+                style="height: 500px; width: 400px; min-width: 400px"
+              >
+                <div
+                  style="
+                    background: url(./image/1.jpeg) no-repeat center / cover;
+                  "
+                  alt=""
+                  id="big-image"
+                  class="w-100 h-100 position-relative"
+                >
+                  <div id="custom-content">
+                    <div id="custom-content__name"></div>
+                    <div class="user-custom-image" id="custom-content__img">
+                      <img
+                        class="w-100 h-100"
+                        src=""
+                        alt="Upload Image"
+                        id="custom-content__img__1"
+                      />
+                    </div>
+                    <div id="custom-content__msg"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 col-lg-4">
+          <div class="my-3">
+            <h5>Product Name</h5>
+            <label for="name">Name</label>
+            <input
+              type="text"
+              placeholder="Custom Text"
+              class="my-2"
+              name="name"
+              oninput="onInput(event)"
+            />
+            <label for="name">Message</label>
+            <textarea
+              type="text"
+              placeholder="Enter your message"
+              class="my-2"
+              name="message"
+              oninput="onInput(event)"
+            ></textarea>
+
+            <label for="image">Personalised Image</label>
+            <input
+              type="file"
+              placeholder="Upload Your Image"
+              name="image"
+              oninput="onInput(event)"
+            />
+          </div>
+          <button onclick="generatePDFForBackend()">Download PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="pdf-content">
+      <div id="box-img" class="position-relative">
+        <img src="./image/abox.jpg" alt="" />
+        <div class="position-absolute" id="custom-content2">
+          <div id="custom-content2__name"></div>
+          <div id="custom-content2__img">
+            <img src="" alt="" id="custom-content2__img__1" class="w-100 h-100"/>
+          </div>
+          <div id="custom-content2__msg"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      let images = [
+        "./image/1.jpeg",
+        "./image/2.jpeg",
+        "./image/3.jpeg",
+        "./image/4.jpeg",
+      ];
+      const vImageGallery = document.getElementById("small-image");
+      const mainImage = document.getElementById("big-image");
+      const customContent = document.getElementById("custom-content");
+      const sImg = document.querySelectorAll("simg");
+      let cName = "",
+        cImg = "",
+        cMsg = "";
+      const setImage = (e) => {
+        mainImage.style.background = `url(${e.target.src}) no-repeat center /cover`;
+        console.log();
+        if (e.target.attributes.key.value !== "3")
+          customContent.style.display = "none";
+        else customContent.style.display = "block";
+      };
+
+      const onInput = (e) => {
+        customContent.style.display = "block";
+        mainImage.style.background = `url(${images[3]}) no-repeat center /cover`;
+        if (e.target.name === "name") cName = e.target.value;
+        if (e.target.name === "message") cMsg = e.target.value;
+        if (e.target.name === "image") {
+          const [file] = e.target.files;
+          if (file) {
+            cImg = URL.createObjectURL(file);
+          }
+          console.log(e.target, e.target.value, cImg, e.target.files, cImg);
+        }
+        document.getElementById("custom-content__name").innerText = cName;
+        document.getElementById("custom-content__msg").innerText = cMsg;
+        document.getElementById("custom-content__img__1").src = cImg;
+
+        // for PDF
+        document.getElementById("custom-content2__name").innerText = cName;
+        document.getElementById("custom-content2__msg").innerText = cMsg;
+        document.getElementById("custom-content2__img__1").src = cImg;
+      };
+      images.forEach((img, i) => {
+        vImageGallery.innerHTML += `<img src=${img} class="w-100" class="simg" onclick="setImage(event)" key=${i}>`;
+      });
+    </script>
+    <script src="./custom_pdf.js"></script>
+  </body>
+</html>
